@@ -30,9 +30,9 @@ from pytorch_lightning.loggers import NeptuneLogger
 #Catalyst
 from catalyst import dl
 from catalyst.dl import (
-    SupervisedRunner, BatchOverfitCallback,
+    SupervisedRunner, BatchOverfitCallback,EarlyStoppingCallback
 )
-from catalyst.callbacks import EarlyStoppingCallback
+#from catalyst.callbacks import EarlyStoppingCallback
 from catalyst.loggers.wandb import WandbLogger
 # set env variable for data
 os.environ["L5KIT_DATA_FOLDER"] = "/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles"
@@ -45,6 +45,7 @@ cfg = load_config_data("/Users/h/Downloads/lyft-motion-prediction-autonomous-veh
 from IPython.display import display, clear_output, HTML
 from l5kit.data import ChunkedDataset, LocalDataManager
 from l5kit.dataset import EgoDataset, AgentDataset
+
 
 
 cfg2 = load_config_data("/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/lyft_config_files/agent_motion_config.yaml")
@@ -135,7 +136,7 @@ loaders = {
 class LyftRunner(dl.SupervisedRunner):
     def predict_batch(self, batch):
         return self.model(batch[0].to(self.device).view(batch[0].size(0), -1))
-    def _handle_batch(self, batch):
+    def handle_batch(self, batch):
         x, y = batch['image'], batch['target_positions']
         y_hat = self.model(x).view(y.shape)
         target_availabilities = batch["target_availabilities"].unsqueeze(-1)
@@ -146,6 +147,7 @@ class LyftRunner(dl.SupervisedRunner):
         self.batch_metrics.update(
             {"loss": loss}
         )
+    
         
         
 #    %%time
@@ -175,6 +177,29 @@ neptune_logger = NeptuneLogger(
 )
 # trainer = Trainer(max_epochs=10, logger=neptune_logger)
 
+# runner.train(
+#        model=model,
+#        optimizer=optimizer,
+#        loaders=loaders,
+#        logdir="../working",
+#        num_epochs=4,
+#        verbose=True,
+#        load_best_on_end=True,
+#        callbacks=[BatchOverfitCallback(train=10, valid=0.5), 
+#                  EarlyStoppingCallback(
+#            patience=2,
+#            metric_key="loss",
+#            loader_key="valid",
+#            minimize=True,
+#            order=1),
+#             WandbLogger(project="dertaismus",name= 'Example')
+#                  ]
+#    )
+   
+
+
+
+
 runner.train(
        model=model,
        optimizer=optimizer,
@@ -189,11 +214,11 @@ runner.train(
            metric_key="loss",
            loader_key="valid",
            minimize=True,
+           
        )
+       
                  ]
    )
-     
-     
 #runner.train()
 # patience – number of epochs with no improvement after which training will be stopped.
 
