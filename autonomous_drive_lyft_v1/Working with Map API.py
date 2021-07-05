@@ -17,17 +17,22 @@ from tqdm import tqdm
 from collections import Counter
 from l5kit.data import PERCEPTION_LABELS
 from prettytable import PrettyTable
+
 # set env variable for data
 os.environ["L5KIT_DATA_FOLDER"] = "/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles"
 
 
 # get config
-cfg = load_config_data("/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/visualisation_config2.yaml")
+cfg = load_config_data("/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/lyft_config_files/visualisation_config2.yaml")
 #https://github.com/lyft/l5kit/blob/master/examples/visualisation/visualisation_config.yaml
 
 from IPython.display import display, clear_output, HTML
 from l5kit.data import ChunkedDataset, LocalDataManager
 from l5kit.dataset import EgoDataset, AgentDataset
+
+import cv2
+
+
 
 dm = LocalDataManager()
 dataset_path = dm.require(cfg["val_data_loader"]["key"]);
@@ -50,7 +55,7 @@ def plot_image(map_type, ax, agent=False):
     images = []
     for idx in indexes:    
         data = dataset[idx]
-        im = data["image"].transpose(1, 2, 0)
+        im = data["image"].transpose(1, 2, 0) #交换纬度
         im = dataset.rasterizer.to_rgb(im)
         target_positions_pixels = transform_points(data["target_positions"] + data["centroid"][:2], data["world_to_image"])
         center_in_pixels = np.asarray(cfg["raster_params"]["ego_center"]) * cfg["raster_params"]["raster_size"]
@@ -74,16 +79,16 @@ print(table)
 
 
 #What if I want to visualise the Autonomous Vehicle (AV)?
-dataset = EgoDataset(cfg, zarr_dataset, rasterizer)
-data = dataset[80]
+# dataset = EgoDataset(cfg, zarr_dataset, rasterizer)
+# data = dataset[80]
 
-im = data["image"].transpose(1, 2, 0)
-im = dataset.rasterizer.to_rgb(im)
-target_positions_pixels = transform_points(data["target_positions"] + data["centroid"][:2], data["world_to_image"])
-draw_trajectory(im, target_positions_pixels, TARGET_POINTS_COLOR,1,data["target_yaws"])
+# im = data["image"].transpose(1, 2, 0)
+# im = dataset.rasterizer.to_rgb(im)
+# target_positions_pixels = transform_points(data["target_positions"] + data["centroid"][:2], data["world_to_image"])
+# draw_trajectory(im, target_positions_pixels, TARGET_POINTS_COLOR,1,data["target_yaws"])
 
 
-plt.imshow(im[::-1])
+# plt.imshow(im[::-1])
 plt.show()
 
 

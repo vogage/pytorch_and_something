@@ -9,6 +9,7 @@ Created on Tue Jun 29 16:27:24 2021
 import numpy as np
 import l5kit, os
 import matplotlib.pyplot as plt
+
 from l5kit.rasterization import build_rasterizer
 from l5kit.configs import load_config_data
 from l5kit.visualization import draw_trajectory, TARGET_POINTS_COLOR
@@ -81,25 +82,71 @@ class LyftModel(torch.nn.Module):
         self.logit = nn.Linear(4096, out_features=num_targets)
         self.logit_final = nn.Linear(128, 12)
         self.num_preds = num_targets * 3
-    def forward(self, x):
-        x = self.backbone.encoder.conv1(x)
-        x = self.backbone.encoder.bn1(x)        
-        x = self.backbone.encoder.relu(x)
-        x = self.backbone.encoder.maxpool(x)        
-        x = self.backbone.encoder.layer1(x)
-        x = self.backbone.encoder.layer2(x)
-        x = self.backbone.encoder.layer3(x)
-        x = self.backbone.encoder.layer4(x)        
-        x = self.backbone.decoder.p5(x)
-        x = self.backbone.decoder.seg_blocks[0](x)
-        x = self.backbone.decoder.merge(x)
-        x = self.backbone.segmentation_head(x)
-        x = self.backbone.encoder.maxpool(x)
-        x = torch.flatten(x, 1)
-        x = self.head(x)
-        x = self.logit(x)   
-        x = x.permute(1, 0)
-        x = self.logit_final(x)
+    def forward(self, x): #torch.size([12, 5, 224, 224])
+        x = self.backbone.encoder.conv1(x) #x.size() : torch.size([12, 64, 112, 112])  
+        #(conv1): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+        x = self.backbone.encoder.bn1(x)       #x.size() : torch.size([12, 64, 112, 112]) 
+        x = self.backbone.encoder.relu(x) #x.size() : torch.size([12, 64, 112, 112])
+        x = self.backbone.encoder.maxpool(x)   #x.size() : torch.size([12, 64, 56, 56])  
+        
+        
+        x = self.backbone.encoder.layer1(x)#x.size() : torch.size([12, 256, 56, 56])
+    #      (layer1): Sequential(
+    #   (0): Bottleneck(
+    #     (conv1): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    #     (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    #     (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32, bias=False)
+    #     (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    #     (conv3): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    #     (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    #     (relu): ReLU(inplace=True)
+    
+    #     (downsample): Sequential(
+    #       (0): Conv2d(64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    #       (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    #     )
+    #   )
+    #   (1): Bottleneck(
+    #     (conv1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    #     (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    #     (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32, bias=False)
+    #     (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    #     (conv3): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    #     (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    #     (relu): ReLU(inplace=True)
+    #   )
+    #   (2): Bottleneck(
+    #     (conv1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    #     (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    #     (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32, bias=False)
+    #     (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    #     (conv3): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    #     (bn3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    #     (relu): ReLU(inplace=True)
+    #   )
+    # )
+       
+        x = self.backbone.encoder.layer2(x)#x.size() : torch.Size([12, 512, 28, 28])
+        x = self.backbone.encoder.layer3(x)#x.size() : torch.Size([12, 1024, 14, 14])
+        x = self.backbone.encoder.layer4(x)  #x.size() : torch.Size([12, 2048, 7, 7])     
+        
+        
+        x = self.backbone.decoder.p5(x)#x.size() : torch.Size([12, 256, 7, 7])
+          # self.p5 = nn.Conv2d(encoder_channels[0], pyramid_channels, kernel_size=1)
+          
+        x = self.backbone.decoder.seg_blocks[0](x)#x.size() : torch.Size([12, 128, 56, 56])
+        
+        
+        x = self.backbone.decoder.merge(x)#x.size() : torch.Size([128, 56, 56])
+        
+        x = self.backbone.segmentation_head(x)#x.size() : torch.Size([128, 1, 27])
+        
+        x = self.backbone.encoder.maxpool(x)#x.size() : torch.Size([128, 1, 14])
+        x = torch.flatten(x, 1)#x.size() : torch.Size([128, 14])
+        x = self.head(x)#x.size() : torch.Size([128, 4096])
+        x = self.logit(x)   #x.size() : torch.Size([128, 100])
+        x = x.permute(1, 0) #纬度交换#x.size() : torch.Size([100, 128])
+        x = self.logit_final(x) #torch.Size([100, 12])
         return x
     
     
@@ -110,7 +157,7 @@ train_zarr = ChunkedDataset(dm.require(train_cfg['key'])).open()
 train_dataset = AgentDataset(cfg2, train_zarr, rasterizer)
 
 del train_cfg['key']
-subset = torch.utils.data.Subset(train_dataset, range(0, 1100))
+subset = torch.utils.data.Subset(train_dataset, range(0, 200))
 
 
 train_dataloader = DataLoader(subset,
@@ -140,6 +187,8 @@ class LyftRunner(dl.SupervisedRunner):
         x, y = batch['image'], batch['target_positions']
         y_hat = self.model(x).view(y.shape)
         target_availabilities = batch["target_availabilities"].unsqueeze(-1)
+        #torch.Size([12, 50, 1])
+        # so what is target_availabilities ????
         criterion = torch.nn.MSELoss(reduction="none")
         loss = criterion(y_hat, y)
         loss = loss * target_availabilities
@@ -147,6 +196,13 @@ class LyftRunner(dl.SupervisedRunner):
         self.batch_metrics.update(
             {"loss": loss}
         )
+        self.loader_metrics.update({
+            "loss": loss}
+        )
+    # def training_epoch_end(self, outs):
+    #     # log epoch metric
+    #     # 方法：accem4
+    #     self.log('accem4', self.accuracy.compute())
     
         
         
@@ -175,7 +231,7 @@ neptune_logger = NeptuneLogger(
     order=0,# Optional,
 
 )
-# trainer = Trainer(max_epochs=10, logger=neptune_logger)
+#trainer = Trainer(max_epochs=10, logger=neptune_logger)
 
 # runner.train(
 #        model=model,
@@ -204,8 +260,9 @@ runner.train(
        model=model,
        optimizer=optimizer,
        loaders=loaders,
-       logdir="../working",
-       num_epochs=4,
+       logdir="/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/working",
+      
+       num_epochs=1,
        verbose=True,
        load_best_on_end=True,
        callbacks=[BatchOverfitCallback(train=10, valid=0.5), 
@@ -215,9 +272,8 @@ runner.train(
            loader_key="valid",
            minimize=True,
            
-       )
+       )],
        
-                 ]
    )
 #runner.train()
 # patience – number of epochs with no improvement after which training will be stopped.
