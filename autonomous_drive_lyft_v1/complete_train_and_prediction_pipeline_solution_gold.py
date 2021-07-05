@@ -33,7 +33,9 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
+
 import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
 import random
 import time
 
@@ -68,9 +70,12 @@ cfg = {
         'future_delta_time': 0.1,
         'model_name': "model_resnet34_output",
         'lr': 1e-3,
-        'weight_path': "/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/input/lyft-pretrained-model-hv/model_multi_update_lyft_public.pth",
-        'train': False,
-        'predict': True
+       # 'weight_path': "/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/input/lyft-pretrained-model-hv/model_multi_update_lyft_public.pth",
+       'weight_path': "",
+       'train': False,
+        'predict': True,
+        'render_ego_history':True,
+        'step_time': 0.1
     },
 
     'raster_params': {
@@ -81,21 +86,22 @@ cfg = {
         'satellite_map_key': 'aerial_map/aerial_map.png',
         'semantic_map_key': 'semantic_map/semantic_map.pb',
         'dataset_meta_key': 'meta.json',
-        'filter_agents_threshold': 0.5
+        'filter_agents_threshold': 0.5,
+        'set_origin_to_bottom': True
     },
 
     'train_data_loader': {
         'key': 'scenes/train.zarr',
-        'batch_size': 16,
+        'batch_size': 2,
         'shuffle': True,
-        'num_workers': 4
+        'num_workers': 0
     },
     
     'test_data_loader': {
         'key': 'scenes/test.zarr',
-        'batch_size': 32,
+        'batch_size': 2,
         'shuffle': False,
-        'num_workers': 4
+        'num_workers': 0
     },
 
     'train_params': {
@@ -112,6 +118,7 @@ dm = LocalDataManager(None)
 
 # ===== INIT TRAIN DATASET============================================================
 train_cfg = cfg["train_data_loader"]
+
 rasterizer = build_rasterizer(cfg, dm)
 train_zarr = ChunkedDataset(dm.require(train_cfg["key"])).open()
 train_dataset = AgentDataset(cfg, train_zarr, rasterizer)
@@ -238,10 +245,13 @@ class LyftMultiModel(nn.Module):
         super().__init__()
 
         architecture = cfg["model_params"]["model_architecture"]
+        #  'model_architecture': 'resnet34',
         backbone = eval(architecture)(pretrained=True, progress=True)
         self.backbone = backbone
 
         num_history_channels = (cfg["model_params"]["history_num_frames"] + 1) * 2
+        #  num_history_channels = 22
+        #  'history_num_frames': 10,
         num_in_channels = 3 + num_history_channels
 
         self.backbone.conv1 = nn.Conv2d(
@@ -263,6 +273,8 @@ class LyftMultiModel(nn.Module):
 
         # X, Y coords for the future positions (output shape: batch_sizex50x2)
         self.future_len = cfg["model_params"]["future_num_frames"]
+        # 'future_num_frames': 50,
+        
         num_targets = 2 * self.future_len
 
         # You can add more layers here.
@@ -276,8 +288,8 @@ class LyftMultiModel(nn.Module):
 
         self.logit = nn.Linear(4096, out_features=self.num_preds + num_modes)
 
-    def forward(self, x):
-        x = self.backbone.conv1(x)
+    def forward(self, x): #torch.Size([2, 25, 224, 224])
+        x = self.backbone.conv1(x)#torch.Size([2, 64, 112, 112])
         x = self.backbone.bn1(x)
         x = self.backbone.relu(x)
         x = self.backbone.maxpool(x)

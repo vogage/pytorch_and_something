@@ -82,6 +82,7 @@ class LyftModel(torch.nn.Module):
         self.logit = nn.Linear(4096, out_features=num_targets)
         self.logit_final = nn.Linear(128, 12)
         self.num_preds = num_targets * 3
+        
     def forward(self, x): #torch.size([12, 5, 224, 224])
         x = self.backbone.encoder.conv1(x) #x.size() : torch.size([12, 64, 112, 112])  
         #(conv1): Conv2d(3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
