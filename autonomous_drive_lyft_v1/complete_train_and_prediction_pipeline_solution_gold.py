@@ -18,6 +18,7 @@ from torch.utils.data import DataLoader
 from torchvision.models.resnet import resnet50, resnet18, resnet34, resnet101
 from tqdm import tqdm
 
+
 import l5kit
 from l5kit.configs import load_config_data
 from l5kit.data import LocalDataManager, ChunkedDataset
@@ -70,10 +71,10 @@ cfg = {
         'future_delta_time': 0.1,
         'model_name': "model_resnet34_output",
         'lr': 1e-3,
-       # 'weight_path': "/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/input/lyft-pretrained-model-hv/model_multi_update_lyft_public.pth",
-       'weight_path': "",
-       'train': False,
-        'predict': True,
+        # 'weight_path': "/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/input/lyft-pretrained-model-hv/model_multi_update_lyft_public.pth",
+        'weight_path': "",
+        'train': True,
+        'predict': False,
         'render_ego_history':True,
         'step_time': 0.1
     },
@@ -146,6 +147,8 @@ print(test_dataset)
 def visualize_trajectory(dataset, index, title="target_positions movement with draw_trajectory"):
     data = dataset[index]
     im = data["image"].transpose(1, 2, 0)
+    # 共25个channels，其中11个chanel作为agent，11个channel作为ego，剩下的3个作为image
+    
     im = dataset.rasterizer.to_rgb(im)
     target_positions_pixels = transform_points(data["target_positions"] + data["centroid"][:2], data["world_to_image"])
     draw_trajectory(im, target_positions_pixels, TARGET_POINTS_COLOR, radius=1, yaws=data["target_yaws"])
@@ -287,29 +290,36 @@ class LyftMultiModel(nn.Module):
         self.num_modes = num_modes
 
         self.logit = nn.Linear(4096, out_features=self.num_preds + num_modes)
+        # out_features = 303
 
     def forward(self, x): #torch.Size([2, 25, 224, 224])
         x = self.backbone.conv1(x)#torch.Size([2, 64, 112, 112])
         x = self.backbone.bn1(x)
         x = self.backbone.relu(x)
-        x = self.backbone.maxpool(x)
+        # MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+        x = self.backbone.maxpool(x) #torch.Size([2, 64, 56, 56])
 
-        x = self.backbone.layer1(x)
-        x = self.backbone.layer2(x)
-        x = self.backbone.layer3(x)
-        x = self.backbone.layer4(x)
+        x = self.backbone.layer1(x) #torch.Size([2, 64, 56, 56])
+        x = self.backbone.layer2(x) #torch.Size([2, 128, 28, 28])
+        x = self.backbone.layer3(x) #torch.Size([2, 256, 14, 14])
+        x = self.backbone.layer4(x) #torch.Size([2, 512, 7, 7])
 
-        x = self.backbone.avgpool(x)
-        x = torch.flatten(x, 1)
+        x = self.backbone.avgpool(x) #torch.Size([2, 512, 1, 1])
+        x = torch.flatten(x, 1) #torch.Size([2, 512])
 
-        x = self.head(x)
-        x = self.logit(x)
+        x = self.head(x) #torch.Size([2, 4096])
+        x = self.logit(x) #torch.Size([2, 303])
 
         # pred (batch_size)x(modes)x(time)x(2D coords)
         # confidences (batch_size)x(modes)
-        bs, _ = x.shape
+        bs, _ = x.shape # x.shape=torch.Size([2, 303])
         pred, confidences = torch.split(x, self.num_preds, dim=1)
+        #pred.size() = torch.Size([2, 300]) 
+        #confidences.size()= torch.size([2,3])
+        
         pred = pred.view(bs, self.num_modes, self.future_len, 2)
+        #pred.size() = torch.Size([2, 3, 50, 2])
+        
         assert confidences.shape == (bs, self.num_modes)
         confidences = torch.softmax(confidences, dim=1)
         return pred, confidences
@@ -317,8 +327,13 @@ class LyftMultiModel(nn.Module):
     
 def forward(data, model, device, criterion = pytorch_neg_multi_log_likelihood_batch):
     inputs = data["image"].to(device)
+    # print(inputs.size())
+    # torch.Size([2, 25, 224, 224])
+    
     target_availabilities = data["target_availabilities"].to(device)
+    
     targets = data["target_positions"].to(device)
+    
     # Forward pass
     preds, confidences = model(inputs)
     loss = criterion(targets, preds, confidences, target_availabilities)
@@ -342,7 +357,15 @@ print(f'device {device}')
 if cfg["model_params"]["train"]:
     
     tr_it = iter(train_dataloader)
+    
     progress_bar = tqdm(range(cfg["train_params"]["max_num_steps"]))
+    # show a progress meter
+    """
+    Decorate an iterable object, returning an iterator which acts exactly
+    like the original iterable, but prints a dynamically updating
+    progressbar every time a value is requested.
+    """
+    
     num_iter = cfg["train_params"]["max_num_steps"]
     losses_train = []
     iterations = []
@@ -356,6 +379,8 @@ if cfg["model_params"]["train"]:
         except StopIteration:
             tr_it = iter(train_dataloader)
             data = next(tr_it)
+            
+        # 处理异常，比如缺页、除0、非法寻址
         model.train()
         torch.set_grad_enabled(True)
         
@@ -363,8 +388,14 @@ if cfg["model_params"]["train"]:
 
         # Backward pass
         optimizer.zero_grad()
+        # It is beneficial to zero out gradients when building a neural network.
+        # This is because by default, gradients are accumulated in buffers
+        # (i.e, not overwritten) whenever .backward() is called.
+        
         loss.backward()
+        
         optimizer.step()
+        
 
         losses_train.append(loss.item())
 
@@ -397,13 +428,18 @@ if cfg["model_params"]["predict"]:
     agent_ids = []
 
     progress_bar = tqdm(test_dataloader)
+    """
+    Decorate an iterable object, returning an iterator which acts exactly
+    like the original iterable, but prints a dynamically updating
+    progressbar every time a value is requested.
+    """
     
     for data in progress_bar:
         
         _, preds, confidences = forward(data, model, device)
     
         #fix for the new environment
-        preds = preds.cpu().numpy()
+        preds = preds.cpu().numpy() # don't know why here use cpu()
         world_from_agents = data["world_from_agent"].numpy()
         centroids = data["centroid"].numpy()
         coords_offset = []
@@ -412,13 +448,47 @@ if cfg["model_params"]["predict"]:
         for idx in range(len(preds)):
             for mode in range(3):
                 preds[idx, mode, :, :] = transform_points(preds[idx, mode, :, :], world_from_agents[idx]) - centroids[idx][:2]
-    
+                """
+                Transform a set of 2D/3D points using the given transformation matrix.
+                Assumes row major ordering of the input points. The transform function has 3 modes:
+                - points (N, F), transf_matrix (F+1, F+1)
+                    all points are transformed using the matrix and the output points have shape (N, F).
+                - points (B, N, F), transf_matrix (F+1, F+1)
+                    all sequences of points are transformed using the same matrix and the output points have shape (B, N, F).
+                    transf_matrix is broadcasted.
+                - points (B, N, F), transf_matrix (B, F+1, F+1)
+                    each sequence of points is transformed using its own matrix and the output points have shape (B, N, F).
+            
+                Note this function assumes points.shape[-1] == matrix.shape[-1] - 1, which means that last
+                rows in the matrices do not influence the final results.
+                For 2D points only the first 2x3 parts of the matrices will be used.
+            
+                Args:
+                    points (np.ndarray): Input points of shape (N, F) or (B, N, F)
+                    with F = 2 or 3 depending on input points are 2D or 3D points.
+                    transf_matrix (np.ndarray): Transformation matrix of shape (F+1, F+1) or (B, F+1, F+1) with F = 2 or 3.
+            
+                Returns:
+                    np.ndarray: Transformed points of shape (N, F) or (B, N, F) depending on the dimensions of the input points.
+                """
         future_coords_offsets_pd.append(preds.copy())
         confidences_list.append(confidences.cpu().numpy().copy())
         timestamps.append(data["timestamp"].numpy().copy())
         agent_ids.append(data["track_id"].numpy().copy()) 
         
+        #Tensor.copy_(src, non_blocking=False) → Tensor
+        """
+        Copies the elements from src into self tensor and returns self.
+        The src tensor must be broadcastable with the self tensor. 
+        It may be of a different data type or reside on a different device.
         
+        Parameters:
+        src (Tensor) – the source tensor to copy from
+        non_blocking (bool) – if True and this copy is between CPU and GPU, 
+        the copy may occur asynchronously with respect to the host. 
+        For other cases, this argument has no effect.   
+        
+        """
 #create submission to submit to Kaggle
 pred_path = 'submission.csv'
 write_pred_csv(pred_path,
