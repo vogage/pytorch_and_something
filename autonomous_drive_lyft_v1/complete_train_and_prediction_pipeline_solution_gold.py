@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+68#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Mon Jul  5 15:11:56 2021
@@ -37,6 +37,8 @@ import matplotlib.pyplot as plt
 
 import os
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
+
 import random
 import time
 
@@ -60,7 +62,7 @@ set_seed(42)
 # --- Lyft configs ---
 cfg = {
     'format_version': 4,
-    'data_path': "/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles",
+    'data_path': "E:\\train_and_test_data\lyft-motion-prediction-autonomous-vehicles\lyft-motion-prediction-autonomous-vehicles",
     'model_params': {
         'model_architecture': 'resnet34',
         'history_num_frames': 10,
@@ -402,13 +404,13 @@ if cfg["model_params"]["train"]:
 
         progress_bar.set_description(f"loss: {loss.item()} loss(avg): {np.mean(losses_train)}")
         if i % cfg['train_params']['checkpoint_every_n_steps'] == 0:
-            torch.save(model.state_dict(), f'/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/working/model_state/{model_name}_{i}.pth',)
+            torch.save(model.state_dict(), f'E:\\train_and_test_data\lyft-motion-prediction-autonomous-vehicles/lyft-motion-prediction-autonomous-vehicles/working/model_state/{model_name}_{i}.pth',)
             iterations.append(i)
             metrics.append(np.mean(losses_train))
             times.append((time.time()-start)/60)
 
     results = pd.DataFrame({'iterations': iterations, 'metrics (avg)': metrics, 'elapsed_time (mins)': times})
-    results.to_csv(f"/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/working/model_state/train_metrics_{model_name}_{num_iter}.csv", index = False)
+    results.to_csv(f"E:\\train_and_test_data\lyft-motion-prediction-autonomous-vehicles/lyft-motion-prediction-autonomous-vehicles/working/model_state/train_metrics_{model_name}_{num_iter}.csv", index = False)
     print(f"Total training time is {(time.time()-start)/60} mins")
     print(results.head())
     
@@ -490,13 +492,13 @@ if cfg["model_params"]["predict"]:
         For other cases, this argument has no effect.   
         
         """
-#create submission to submit to Kaggle
-pred_path = 'submission.csv'
-write_pred_csv(pred_path,
-           timestamps=np.concatenate(timestamps),
-           track_ids=np.concatenate(agent_ids),
-           coords=np.concatenate(future_coords_offsets_pd),
-           confs = np.concatenate(confidences_list)
-          )
+    #create submission to submit to Kaggle
+    pred_path = 'submission.csv'
+    write_pred_csv(pred_path,
+               timestamps=np.concatenate(timestamps),
+               track_ids=np.concatenate(agent_ids),
+               coords=np.concatenate(future_coords_offsets_pd),
+               confs = np.concatenate(confidences_list)
+              )
 
 
