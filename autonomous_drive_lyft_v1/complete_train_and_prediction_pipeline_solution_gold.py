@@ -259,11 +259,11 @@ class LyftMultiModel(nn.Module):
         num_in_channels = 3 + num_history_channels
 
         self.backbone.conv1 = nn.Conv2d(
-            num_in_channels,
-            self.backbone.conv1.out_channels,
-            kernel_size=self.backbone.conv1.kernel_size,
-            stride=self.backbone.conv1.stride,
-            padding=self.backbone.conv1.padding,
+            num_in_channels,  # 3 + num_history_channels = 3 + 22 = 25
+            self.backbone.conv1.out_channels, #64
+            kernel_size=self.backbone.conv1.kernel_size, # (7, 7)
+            stride=self.backbone.conv1.stride, # (2, 2)
+            padding=self.backbone.conv1.padding, # (3, 3)
             bias=False,
         )
 
@@ -402,13 +402,13 @@ if cfg["model_params"]["train"]:
 
         progress_bar.set_description(f"loss: {loss.item()} loss(avg): {np.mean(losses_train)}")
         if i % cfg['train_params']['checkpoint_every_n_steps'] == 0:
-            torch.save(model.state_dict(), f'/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/working/{model_name}_{i}.pth',)
+            torch.save(model.state_dict(), f'/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/working/model_state/{model_name}_{i}.pth',)
             iterations.append(i)
             metrics.append(np.mean(losses_train))
             times.append((time.time()-start)/60)
 
     results = pd.DataFrame({'iterations': iterations, 'metrics (avg)': metrics, 'elapsed_time (mins)': times})
-    results.to_csv(f"train_metrics_{model_name}_{num_iter}.csv", index = False)
+    results.to_csv(f"/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/working/model_state/train_metrics_{model_name}_{num_iter}.csv", index = False)
     print(f"Total training time is {(time.time()-start)/60} mins")
     print(results.head())
     
