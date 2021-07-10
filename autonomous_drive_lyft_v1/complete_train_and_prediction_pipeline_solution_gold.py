@@ -247,6 +247,7 @@ class LyftMultiModel(nn.Module):
     def __init__(self, cfg: Dict, num_modes=3):
         super().__init__()
 
+
         architecture = cfg["model_params"]["model_architecture"]
         #  'model_architecture': 'resnet34',
         backbone = eval(architecture)(pretrained=True, progress=True)
@@ -401,7 +402,7 @@ if cfg["model_params"]["train"]:
 
         progress_bar.set_description(f"loss: {loss.item()} loss(avg): {np.mean(losses_train)}")
         if i % cfg['train_params']['checkpoint_every_n_steps'] == 0:
-            torch.save(model.state_dict(), f'{model_name}_{i}.pth')
+            torch.save(model.state_dict(), f'/Users/h/Downloads/lyft-motion-prediction-autonomous-vehicles/working/{model_name}_{i}.pth',)
             iterations.append(i)
             metrics.append(np.mean(losses_train))
             times.append((time.time()-start)/60)
