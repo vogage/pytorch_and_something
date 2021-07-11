@@ -29,8 +29,9 @@ def writetemplate(line, cell):
     with open(line, 'w') as f:
         f.write(cell.format(**globals()))
         
-        
-TRAIN_PATH = 'input/siim-covid19-resized-to-256px-jpg/train/'
+ROOT_PATH=r'E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\\'       
+
+TRAIN_PATH =ROOT_PATH+'siim-covid19-detection\\train\\'
 IMG_SIZE = 256
 BATCH_SIZE = 16
 EPOCHS = 10
@@ -75,7 +76,7 @@ def parse_opt():
 
 opt = parse_opt()
 # Load image level csv file
-df = pd.read_csv('input/siim-covid19-detection/train_image_level.csv')
+df = pd.read_csv(ROOT_PATH+'/siim-covid19-detection/train_image_level.csv')
 
 # Modify values in the id column
 df['id'] = df.apply(lambda row: row.id.split('_')[0], axis=1)
@@ -84,34 +85,45 @@ df['path'] = df.apply(lambda row: TRAIN_PATH+row.id+'.jpg', axis=1)
 # Get image level labels
 df['image_level'] = df.apply(lambda row: row.label.split(' ')[0], axis=1)
 
-df.head(5)
+print(df.head(5))
 
 
 
 # Load meta.csv file
 # Original dimensions are required to scale the bounding box coordinates appropriately.
-meta_df = pd.read_csv('input/siim-covid19-resized-to-256px-jpg/meta.csv')
+meta_df = pd.read_csv(ROOT_PATH+'/SIIM_COVID_19_Resized_to_256px_JPG/meta.csv')
 train_meta_df = meta_df.loc[meta_df.split == 'train']
 train_meta_df = train_meta_df.drop('split', axis=1)
 train_meta_df.columns = ['id', 'dim0', 'dim1']
 
-train_meta_df.head(2)
+print(train_meta_df.head(2))
 
 
 
 # Merge both the dataframes
 df = df.merge(train_meta_df, on='id',how="left")
-df.head(2)
+print(df.head(5))
 
+# Create train and validation split.
+train_df, valid_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df.image_level.values)
+"""
+    stratify : array-like, default=None
+        If not None, data is split in a stratified fashion, using this as
+        the class labels.
+        Read more in the :ref:`User Guide <stratification>`.
+"""
+train_df.loc[:, 'split'] = 'train'
+valid_df.loc[:, 'split'] = 'valid'
 
+df = pd.concat([train_df, valid_df]).reset_index(drop=True)
 print(f'Size of dataset: {len(df)}, training images: {len(train_df)}. validation images: {len(valid_df)}')
 
 
-os.makedirs('tmp/covid/images/train', exist_ok=True)
-os.makedirs('tmp/covid/images/valid', exist_ok=True)
+os.makedirs(ROOT_PATH+'tmp/covid/images/train', exist_ok=True)
+os.makedirs(ROOT_PATH+'tmp/covid/images/valid', exist_ok=True)
 
-os.makedirs('tmp/covid/labels/train', exist_ok=True)
-os.makedirs('tmp/covid/labels/valid', exist_ok=True)
+os.makedirs(ROOT_PATH+'tmp/covid/labels/train', exist_ok=True)
+os.makedirs(ROOT_PATH+'tmp/covid/labels/valid', exist_ok=True)
 
 
 # Move the images to relevant split folder.
@@ -119,10 +131,16 @@ for i in tqdm(range(len(df))):
     row = df.loc[i]
     if row.split == 'train':
         copyfile(row.path, f'tmp/covid/images/train/{row.id}.jpg')
+
     else:
         copyfile(row.path, f'tmp/covid/images/valid/{row.id}.jpg')
         
-        
+    """Copy data from src to dst in the most efficient way possible.
+
+    If follow_symlinks is not set and src is a symbolic link, a new
+    symlink will be created instead of copying the file it points to.
+
+    """        
         
         
 # Create .yaml file 
