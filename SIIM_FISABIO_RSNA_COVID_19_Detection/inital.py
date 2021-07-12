@@ -16,6 +16,13 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import torch
 import argparse
+
+
+import pydicom
+from pydicom.pixel_data_handlers.util import apply_voi_lut
+from glob import glob
+
+
 print(f"Setup complete. Using torch {torch.__version__} ({torch.cuda.get_device_properties(0).name if torch.cuda.is_available() else 'CPU'})")
 
 # Necessary/extra dependencies. 
@@ -81,11 +88,88 @@ df = pd.read_csv(ROOT_PATH+'/siim-covid19-detection/train_image_level.csv')
 # Modify values in the id column
 df['id'] = df.apply(lambda row: row.id.split('_')[0], axis=1)
 # Add absolute path
-df['path'] = df.apply(lambda row: TRAIN_PATH+row.id+'.jpg', axis=1)
+df['path'] = df.apply(lambda row: ROOT_PATH+'SIIM_COVID_19_Resized_to_256px_JPG\\train\\'+row.id+'.jpg', axis=1)
 # Get image level labels
+
+
+
+
+dataset_dir = ROOT_PATH+'siim-covid19-detection'
+
+dicom_paths = glob(f'{dataset_dir}/train/*/*/*.dcm')
+"""
+Return a list of paths matching a pathname pattern.
+
+The pattern may contain simple shell-style wildcards a la
+fnmatch. However, unlike fnmatch, filenames starting with a
+dot are special cases that are not matched by '*' and '?'
+patterns.
+
+If recursive is true, the pattern '**' will match any files and
+zero or more directories and subdirectories.
+"""
+#df['path'] = df.apply(lambda row: TRAIN_PATH+f'\{row.StudyInstanceUID}\\', axis=1)    
 df['image_level'] = df.apply(lambda row: row.label.split(' ')[0], axis=1)
 
 print(df.head(5))
+
+  
+for path in dicom_paths[:5]:
+    print(path)
+    
+    
+    
+    
+
+def dicom_dataset_to_dict(dicom_header):
+    dicom_dict = {}
+    repr(dicom_header)
+    for dicom_value in dicom_header.values():
+        if dicom_value.tag == (0x7fe0, 0x0010):
+            # discard pixel data
+            continue
+        if type(dicom_value.value) == pydicom.dataset.Dataset:
+            dicom_dict[dicom_value.name] = dicom_dataset_to_dict(dicom_value.value)
+        else:
+            v = _convert_value(dicom_value.value)
+            dicom_dict[dicom_value.name] = v
+    
+    for d in dicom_dict:
+        print('{} : {}'.format(d, dicom_dict[d]))
+
+
+def _sanitise_unicode(s):
+    return s.replace(u"\u0000", "").strip()
+
+
+def _convert_value(v):
+    t = type(v)
+    if t in (list, int, float):
+        cv = v
+    elif t == str:
+        cv = _sanitise_unicode(v)
+    elif t == bytes:
+        s = v.decode('ascii', 'replace')
+        cv = _sanitise_unicode(s)
+    elif t == pydicom.valuerep.DSfloat:
+        cv = float(v)
+    elif t == pydicom.valuerep.IS:
+        cv = int(v)
+    else:
+        cv = repr(v)
+    return cv
+
+
+fig, ax = plt.subplots(1, 3, figsize=(18,6))
+
+ds0 = pydicom.dcmread(dicom_paths[0]).pixel_array
+ds1 = pydicom.dcmread(dicom_paths[1]).pixel_array
+ds2 = pydicom.dcmread(dicom_paths[2]).pixel_array
+
+ax[0].imshow(ds0)
+ax[1].imshow(ds1, cmap=plt.cm.bone)
+ax[2].imshow(ds2, cmap='gray')
+plt.show()
 
 
 
@@ -129,9 +213,8 @@ os.makedirs(ROOT_PATH+'tmp/covid/labels/valid', exist_ok=True)
 # Move the images to relevant split folder.
 for i in tqdm(range(len(df))):
     row = df.loc[i]
-    if row.split == 'train':
-        copyfile(row.path, f'tmp/covid/images/train/{row.id}.jpg')
-
+    if row.split == 'train':               
+        copyfile(row.path, ROOT_PATH+f'tmp/covid/images/train/{row.id}.jpg')
     else:
         copyfile(row.path, f'tmp/covid/images/valid/{row.id}.jpg')
         
@@ -201,7 +284,7 @@ def get_yolo_format_bbox(img_w, img_h, bboxes):
         
         yolo_boxes.append([xc/img_w, yc/img_h, w/img_w, h/img_h]) # x_center y_center width height
     
-    return yolo_boxe
+    return yolo_boxes
 
 
 
