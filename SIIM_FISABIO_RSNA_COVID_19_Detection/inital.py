@@ -216,7 +216,7 @@ for i in tqdm(range(len(df))):
     if row.split == 'train':               
         copyfile(row.path, ROOT_PATH+f'tmp/covid/images/train/{row.id}.jpg')
     else:
-        copyfile(row.path, f'tmp/covid/images/valid/{row.id}.jpg')
+        copyfile(row.path, ROOT_PATH+f'tmp/covid/images/valid/{row.id}.jpg')
         
     """Copy data from src to dst in the most efficient way possible.
 
