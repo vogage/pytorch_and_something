@@ -4,6 +4,7 @@ Created on Sat Jul 10 12:25:57 2021
 
 @author: Qiandehou
 """
+#https://www.kaggle.com/ayuraj/train-covid-19-detection-using-yolov5 
 
 import os
 import gc
@@ -17,12 +18,24 @@ from sklearn.model_selection import train_test_split
 import torch
 import argparse
 
+import yaml
 
 import pydicom
 from pydicom.pixel_data_handlers.util import apply_voi_lut
 from glob import glob
 
+import wandb
+wandb.login()
 
+
+import sys
+  
+# adding Folder_2 to the system path
+
+
+    
+    
+    
 print(f"Setup complete. Using torch {torch.__version__} ({torch.cuda.get_device_properties(0).name if torch.cuda.is_available() else 'CPU'})")
 
 # Necessary/extra dependencies. 
@@ -36,9 +49,15 @@ def writetemplate(line, cell):
     with open(line, 'w') as f:
         f.write(cell.format(**globals()))
         
+#Environment Setting
 ROOT_PATH=r'E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\\'       
 
 TRAIN_PATH =ROOT_PATH+'siim-covid19-detection\\train\\'
+
+
+
+
+#Hyperparameters Setting
 IMG_SIZE = 256
 BATCH_SIZE = 16
 EPOCHS = 10
@@ -53,35 +72,6 @@ EPOCHS = 10
 
 
 
-# def train(hyp,  # path/to/hyp.yaml or hyp dictionary
-#           opt,
-#           device,
-#           ):
-#     save_dir, epochs, batch_size, weights, single_cls, evolve, data, cfg, resume, notest, nosave, workers, = \
-#         opt.save_dir, opt.epochs, opt.batch_size, opt.weights, opt.single_cls, opt.evolve, opt.data, opt.cfg, \
-#         opt.resume, opt.notest, opt.nosave, opt.workers
-                 
-def parse_opt():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', type=str, default='./yolov5s.pt', help='weights path')
-    parser.add_argument('--img-size', nargs='+', type=int, default=[IMG_SIZE, IMG_SIZE], help='image (height, width)')
-    parser.add_argument('--batch-size', type=int, default=BATCH_SIZE, help='batch size')
-    parser.add_argument('--device', default='cpu', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
-    # parser.add_argument('--include', nargs='+', default=['torchscript', 'onnx', 'coreml'], help='include formats')
-    # parser.add_argument('--half', action='store_true', help='FP16 half-precision export')
-    # parser.add_argument('--inplace', action='store_true', help='set YOLOv5 Detect() inplace=True')
-    # parser.add_argument('--train', action='store_true', help='model.train() mode')
-    # parser.add_argument('--optimize', action='store_true', help='TorchScript: optimize for mobile')
-    # parser.add_argument('--dynamic', action='store_true', help='ONNX: dynamic axes')
-    # parser.add_argument('--simplify', action='store_true', help='ONNX: simplify model')
-    # parser.add_argument('--opset-version', type=int, default=12, help='ONNX: opset version')
-    parser.add_argument('--epochs', type=int, default=EPOCHS, help='Number of epochs')
-    parser.add_argument('--save_period', type=int, default=1, help='Save model after interval')  
-    parser.add_argument('--project', type=str, default='kaggle-siim-covid', help='W&B project name') 
-    opt = parser.parse_args()
-    return opt
-
-opt = parse_opt()
 # Load image level csv file
 df = pd.read_csv(ROOT_PATH+'/siim-covid19-detection/train_image_level.csv')
 
@@ -118,7 +108,26 @@ for path in dicom_paths[:5]:
     print(path)
     
     
+def read_xray(path, voi_lut = True, fix_monochrome = True):
+    # Original from: https://www.kaggle.com/raddar/convert-dicom-to-np-array-the-correct-way
+    dicom = pydicom.read_file(path)
     
+    # VOI LUT (if available by DICOM device) is used to transform raw DICOM data to 
+    # "human-friendly" view
+    if voi_lut:
+        data = apply_voi_lut(dicom.pixel_array, dicom)
+    else:
+        data = dicom.pixel_array
+               
+    # depending on this value, X-ray may look inverted - fix that:
+    if fix_monochrome and dicom.PhotometricInterpretation == "MONOCHROME1":
+        data = np.amax(data) - data
+        
+    data = data - np.min(data)
+    data = data / np.max(data)
+    data = (data * 255).astype(np.uint8)
+        
+    return data    
     
 
 def dicom_dataset_to_dict(dicom_header):
@@ -203,41 +212,42 @@ df = pd.concat([train_df, valid_df]).reset_index(drop=True)
 print(f'Size of dataset: {len(df)}, training images: {len(train_df)}. validation images: {len(valid_df)}')
 
 
-os.makedirs(ROOT_PATH+'tmp/covid/images/train', exist_ok=True)
-os.makedirs(ROOT_PATH+'tmp/covid/images/valid', exist_ok=True)
+# os.makedirs(ROOT_PATH+'tmp/covid/images/train', exist_ok=True)
+# os.makedirs(ROOT_PATH+'tmp/covid/images/valid', exist_ok=True)
 
-os.makedirs(ROOT_PATH+'tmp/covid/labels/train', exist_ok=True)
-os.makedirs(ROOT_PATH+'tmp/covid/labels/valid', exist_ok=True)
+# os.makedirs(ROOT_PATH+'tmp/covid/labels/train', exist_ok=True)
+# os.makedirs(ROOT_PATH+'tmp/covid/labels/valid', exist_ok=True)
 
 
-# Move the images to relevant split folder.
-for i in tqdm(range(len(df))):
-    row = df.loc[i]
-    if row.split == 'train':               
-        copyfile(row.path, ROOT_PATH+f'tmp/covid/images/train/{row.id}.jpg')
-    else:
-        copyfile(row.path, f'tmp/covid/images/valid/{row.id}.jpg')
+# # Move the images to relevant split folder.
+# for i in tqdm(range(len(df))):
+#     row = df.loc[i]
+#     if row.split == 'train':               
+#         copyfile(row.path, ROOT_PATH+f'tmp/covid/images/train/{row.id}.jpg')
+#     else:
+#         copyfile(row.path,  ROOT_PATH+f'tmp/covid/images/valid/{row.id}.jpg')
         
-    """Copy data from src to dst in the most efficient way possible.
+#     """Copy data from src to dst in the most efficient way possible.
 
-    If follow_symlinks is not set and src is a symbolic link, a new
-    symlink will be created instead of copying the file it points to.
+#     If follow_symlinks is not set and src is a symbolic link, a new
+#     symlink will be created instead of copying the file it points to.
 
-    """        
+#     """        
         
         
 # Create .yaml file 
 import yaml
 
 data_yaml = dict(
-    train = '../covid/images/train',
-    val = '../covid/images/valid',
+    train = ROOT_PATH+'temp/covid/images/train',
+    val = ROOT_PATH+'temp/covid/images/valid',
     nc = 2,
-    names = ['none', 'opacity']
+    names = ['none', 'opacity'],
+   
 )
 
 # Note that I am creating the file in the yolov5/data/ directory.
-with open('tmp/yolov5/data/data.yaml', 'w') as outfile:
+with open('yolov5/data/data.yaml', 'w') as outfile:
     yaml.dump(data_yaml, outfile, default_flow_style=True)
     
     
@@ -289,42 +299,84 @@ def get_yolo_format_bbox(img_w, img_h, bboxes):
 
 
 # Prepare the txt files for bounding box
-for i in tqdm(range(len(df))):
-    row = df.loc[i]
-    # Get image id
-    img_id = row.id
-    # Get split
-    split = row.split
-    # Get image-level label
-    label = row.image_level
+# Create the train and test labels
+# for i in tqdm(range(len(df))):
+#     row = df.loc[i]
+#     # Get image id
+#     img_id = row.id
+#     # Get split
+#     split = row.split
+#     # Get image-level label
+#     label = row.image_level
     
-    if row.split=='train':
-        file_name = f'tmp/covid/labels/train/{row.id}.txt'
-    else:
-        file_name = f'tmp/covid/labels/valid/{row.id}.txt'
+#     if row.split=='train':
+#         file_name = ROOT_PATH+f'tmp/covid/labels/train/{row.id}.txt'
+#     else:
+#         file_name = ROOT_PATH+f'tmp/covid/labels/valid/{row.id}.txt'
         
     
-    if label=='opacity':
-        # Get bboxes
-        bboxes = get_bbox(row)
-        # Scale bounding boxes
-        scale_bboxes = scale_bbox(row, bboxes)
-        # Format for YOLOv5
-        yolo_bboxes = get_yolo_format_bbox(IMG_SIZE, IMG_SIZE, scale_bboxes)
+#     if label=='opacity':
+#         # Get bboxes
+#         bboxes = get_bbox(row)
+#         # Scale bounding boxes
+#         scale_bboxes = scale_bbox(row, bboxes)
+#         # Format for YOLOv5
+#         yolo_bboxes = get_yolo_format_bbox(IMG_SIZE, IMG_SIZE, scale_bboxes)
         
-        with open(file_name, 'w') as f:
-            for bbox in yolo_bboxes:
-                bbox = [1]+bbox
-                bbox = [str(i) for i in bbox]
-                bbox = ' '.join(bbox)
-                f.write(bbox)
-                f.write('\n')
+#         with open(file_name, 'w') as f:
+#             for bbox in yolo_bboxes:
+#                 bbox = [1]+bbox
+#                 bbox = [str(i) for i in bbox]
+#                 bbox = ' '.join(bbox)
+#                 f.write(bbox)
+#                 f.write('\n')
 
 
-                 
-                 
+sys.path.insert(0, '..\SIIM_FISABIO_RSNA_COVID_19_Detection\yolov5')
+from train import train
 
-TEST_PATH = '/kaggle/input/siim-covid19-resized-to-256px-jpg/test/' # absolute path
+
+def parse_opt():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--weights', type=str, default='./yolov5s.pt', help='weights path')
+    parser.add_argument('--img-size', nargs='+', type=int, default=[IMG_SIZE, IMG_SIZE], help='image (height, width)')
+    parser.add_argument('--batch-size', type=int, default=BATCH_SIZE, help='batch size')
+    parser.add_argument('--device', default='cpu', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
+    # parser.add_argument('--include', nargs='+', default=['torchscript', 'onnx', 'coreml'], help='include formats')
+    # parser.add_argument('--half', action='store_true', help='FP16 half-precision export')
+    # parser.add_argument('--inplace', action='store_true', help='set YOLOv5 Detect() inplace=True')
+    # parser.add_argument('--train', action='store_true', help='model.train() mode')
+    # parser.add_argument('--optimize', action='store_true', help='TorchScript: optimize for mobile')
+    # parser.add_argument('--dynamic', action='store_true', help='ONNX: dynamic axes')
+    # parser.add_argument('--simplify', action='store_true', help='ONNX: simplify model')
+    # parser.add_argument('--opset-version', type=int, default=12, help='ONNX: opset version')
+    parser.add_argument('--epochs', type=int, default=EPOCHS, help='Number of epochs')
+    parser.add_argument('--save_period', type=int, default=1, help='Save model after interval')  
+    parser.add_argument('--project', type=str, default='kaggle-siim-covid', help='W&B project name') 
+    parser.add_argument('--save_dir', type=str, default=ROOT_PATH+'save', help='the directory for model and immediate files')
+    opt = parser.parse_args()
+    return opt
+
+opt = parse_opt()
+
+hyp='data\data.yaml'
+train(hyp,opt,torch.device)  
+"""  
+def train(hyp,  # path/to/hyp.yaml or hyp dictionary
+          opt,
+          device,
+          ):
+    save_dir, epochs, batch_size, weights, single_cls, evolve, data, cfg, resume, notest, nosave, workers, = \
+        opt.save_dir, opt.epochs, opt.batch_size, opt.weights, opt.single_cls, opt.evolve, opt.data, opt.cfg, \
+        opt.resume, opt.notest, opt.nosave, opt.workers
+"""
+
+
+
+          
+"""                 
+# ROOT_PATH=r'E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\\'  
+TEST_PATH = ROOT_PATH+'SIIM_COVID_19_Resized_to_256px_JPG\test' # absolute path
 
 
 MODEL_PATH = 'kaggle-siim-covid/exp/weights/best.pt'\
@@ -414,6 +466,6 @@ for i in tqdm(range(len(sub_df))):
 sub_df['PredictionString'] = predictions
 sub_df.to_csv('submission.csv', index=False)
 sub_df.tail()                        
-                        
+"""                            
                         
                         
