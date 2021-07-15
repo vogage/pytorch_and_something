@@ -1,0 +1,6 @@
+
+*** NameError: name 'loacal_path' is not defined
+E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\SIIM_COVID_19_Resized_to_256px_JPG
+True
+
+wandb: Adding directory to artifact (E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\SIIM_COVID_19_Resized_to_256px_JPG)... Done. 10.7s

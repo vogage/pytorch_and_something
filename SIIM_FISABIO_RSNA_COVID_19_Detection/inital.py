@@ -25,7 +25,7 @@ from pydicom.pixel_data_handlers.util import apply_voi_lut
 from glob import glob
 
 import wandb
-wandb.login()
+
 
 
 import sys
@@ -335,10 +335,20 @@ def get_yolo_format_bbox(img_w, img_h, bboxes):
 sys.path.insert(0, '..\SIIM_FISABIO_RSNA_COVID_19_Detection\yolov5')
 from train import train
 
+# artifact = wandb.Artifact()
+run=wandb.init()
+# api = wandb.Api()
+# artifact = api.artifact('kaggle-siim-covid/my-dataset:v1', type='dataset')
+artifact = wandb.Artifact('animals', type='dataset')
+artifact.add_dir('E:\\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\SIIM_COVID_19_Resized_to_256px_JPG')
+run.log_artifact(artifact)
+
+
+wandb.login()
 
 def parse_opt():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', type=str, default='./yolov5s.pt', help='weights path')
+    parser.add_argument('--weights', type=str, default= ROOT_PATH+'/siim-covid19-detection/yolov5s.pt', help='weights path')
     parser.add_argument('--img-size', nargs='+', type=int, default=[IMG_SIZE, IMG_SIZE], help='image (height, width)')
     parser.add_argument('--batch-size', type=int, default=BATCH_SIZE, help='batch size')
     parser.add_argument('--device', default='cpu', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
@@ -354,12 +364,25 @@ def parse_opt():
     parser.add_argument('--save_period', type=int, default=1, help='Save model after interval')  
     parser.add_argument('--project', type=str, default='kaggle-siim-covid', help='W&B project name') 
     parser.add_argument('--save_dir', type=str, default=ROOT_PATH+'save', help='the directory for model and immediate files')
+    parser.add_argument('--single-cls',action='store_true', help='train as single-class dataset')
+    parser.add_argument('--evolve',action='store_true',help='evolve hyperparameters')
+    parser.add_argument('--data',type=str,default='..\SIIM_FISABIO_RSNA_COVID_19_Detection\yolov5\data\data.yaml',help='data.yaml path')
+    parser.add_argument('--cfg',type=str,default='..\SIIM_FISABIO_RSNA_COVID_19_Detection\yolov5\models\yolov5s.yaml',help='model.yaml path')
+    parser.add_argument('--resume',nargs='?',const=True,default=False,help='resume most recent training')
+    parser.add_argument('--notest',action='store_true',help='only test final epoch')
+    parser.add_argument('--nosave',action='store_true',help='only save final checkpoint')
+    parser.add_argument('--workers',type=int,default=8,help='maximum number of dataloader workers')
+    parser.add_argument('--entity',type=str,default='poi',help='the project by poi (mine)')
+    parser.add_argument('--upload_dataset',type=bool,default=False,help='upload the dataset for data versioning')
+    parser.add_argument('--bbox_interval',type=int,default=2,help='At the end of every bbox_interval epoches,\
+                        the output of the model on the validation set will be uploaded to W&B')
+    parser.add_argument('--artifact_alias', artifact)
     opt = parser.parse_args()
     return opt
 
 opt = parse_opt()
 
-hyp='data\data.yaml'
+hyp='..\SIIM_FISABIO_RSNA_COVID_19_Detection\yolov5\data\data.yaml'
 train(hyp,opt,torch.device)  
 """  
 def train(hyp,  # path/to/hyp.yaml or hyp dictionary

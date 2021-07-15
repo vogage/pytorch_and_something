@@ -1,0 +1,40 @@
+2021-07-16 00:11:12,160 INFO    MainThread:12332 [wandb_setup.py:_flush():69] setting env: {}
+2021-07-16 00:11:12,161 INFO    MainThread:12332 [wandb_setup.py:_flush():69] setting login settings: {}
+2021-07-16 00:11:12,161 INFO    MainThread:12332 [wandb_setup.py:_flush():69] setting login settings: {}
+2021-07-16 00:11:12,161 INFO    MainThread:12332 [wandb_init.py:_log_setup():337] Logging user logs to C:\Users\Qiandehou\Desktop\github\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection\wandb\run-20210716_001112-9a8inzjn\logs\debug.log
+2021-07-16 00:11:12,161 INFO    MainThread:12332 [wandb_init.py:_log_setup():338] Logging internal logs to C:\Users\Qiandehou\Desktop\github\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection\wandb\run-20210716_001112-9a8inzjn\logs\debug-internal.log
+2021-07-16 00:11:12,161 INFO    MainThread:12332 [wandb_init.py:_jupyter_setup():288] configuring jupyter hooks <wandb.sdk.wandb_init._WandbInit object at 0x0000023F1B995310>
+2021-07-16 00:11:12,162 INFO    MainThread:12332 [wandb_init.py:init():370] calling init triggers
+2021-07-16 00:11:12,162 INFO    MainThread:12332 [wandb_init.py:init():375] wandb.init called with sweep_config: {}
+config: {'weights': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\/siim-covid19-detection/yolov5s.pt', 'img_size': [256, 256], 'batch_size': 16, 'device': 'cpu', 'epochs': 10, 'save_period': 1, 'project': 'kaggle-siim-covid', 'save_dir': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\save', 'single_cls': False, 'evolve': False, 'data': '..\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\\data\\data.yaml', 'cfg': '..\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\\models\\yolov5s.yaml', 'resume': False, 'notest': False, 'nosave': False, 'workers': 8, 'entity': 'poi', 'hyp': {'names': ['none', 'opacity'], 'nc': 2, 'train': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\temp/covid/images/train', 'val': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\temp/covid/images/valid'}}
+2021-07-16 00:11:12,162 INFO    MainThread:12332 [wandb_init.py:init():419] starting backend
+2021-07-16 00:11:12,162 INFO    MainThread:12332 [backend.py:_multiprocessing_setup():70] multiprocessing start_methods=spawn, using: spawn
+2021-07-16 00:11:12,165 INFO    MainThread:12332 [backend.py:ensure_launched():135] starting backend process...
+2021-07-16 00:11:12,215 INFO    MainThread:12332 [backend.py:ensure_launched():139] started backend process with pid: 23012
+2021-07-16 00:11:12,216 INFO    MainThread:12332 [wandb_init.py:init():424] backend started and connected
+2021-07-16 00:11:12,216 INFO    MainThread:12332 [wandb_run.py:_label_probe_notebook():844] probe notebook
+2021-07-16 00:11:12,217 INFO    MainThread:12332 [wandb_run.py:_label_probe_notebook():851] Unable to probe notebook: 'NoneType' object has no attribute 'get'
+2021-07-16 00:11:12,217 INFO    MainThread:12332 [wandb_init.py:init():472] updated telemetry
+2021-07-16 00:11:12,218 INFO    MainThread:12332 [wandb_init.py:init():491] communicating current version
+2021-07-16 00:11:16,701 INFO    MainThread:12332 [wandb_init.py:init():496] got version response 
+2021-07-16 00:11:16,701 INFO    MainThread:12332 [wandb_init.py:init():504] communicating run to backend with 30 second timeout
+2021-07-16 00:11:22,816 INFO    MainThread:12332 [wandb_init.py:init():529] starting run threads in backend
+2021-07-16 00:11:27,835 INFO    MainThread:12332 [wandb_run.py:_console_start():1623] atexit reg
+2021-07-16 00:11:27,835 INFO    MainThread:12332 [wandb_run.py:_redirect():1497] redirect: SettingsConsole.WRAP
+2021-07-16 00:11:27,835 INFO    MainThread:12332 [wandb_run.py:_redirect():1534] Wrapping output streams.
+2021-07-16 00:11:27,836 INFO    MainThread:12332 [wandb_run.py:_redirect():1558] Redirects installed.
+2021-07-16 00:11:27,836 INFO    MainThread:12332 [wandb_init.py:init():554] run started, returning control to user process
+2021-07-16 00:11:27,911 INFO    MainThread:12332 [wandb_init.py:_pause_backend():250] pausing backend
+2021-07-16 00:11:27,911 INFO    MainThread:12332 [jupyter.py:save_ipynb():284] not saving jupyter notebook
+2021-07-16 00:14:51,543 INFO    MainThread:12332 [wandb_init.py:_resume_backend():259] resuming backend
+2021-07-16 00:14:52,960 INFO    MainThread:12332 [wandb_run.py:_config_callback():872] config_cb None None {'opt': {'weights': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\/siim-covid19-detection/yolov5s.pt', 'img_size': [256, 256], 'batch_size': 16, 'device': 'cpu', 'epochs': 10, 'save_period': 1, 'project': 'kaggle-siim-covid', 'save_dir': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\save', 'single_cls': False, 'evolve': False, 'data': '..\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\\data\\data.yaml', 'cfg': '..\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\\models\\yolov5s.yaml', 'resume': False, 'notest': False, 'nosave': False, 'workers': 8, 'entity': 'poi', 'upload_dataset': False, 'hyp': {'names': ['none', 'opacity'], 'nc': 2, 'train': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\temp/covid/images/train', 'val': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\temp/covid/images/valid'}}, 'data_dict': {'names': ['none', 'opacity'], 'nc': 2, 'train': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\temp/covid/images/train', 'val': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\temp/covid/images/valid'}}
+2021-07-16 00:14:54,464 INFO    MainThread:12332 [wandb_init.py:_pause_backend():250] pausing backend
+2021-07-16 00:14:54,464 INFO    MainThread:12332 [jupyter.py:save_ipynb():284] not saving jupyter notebook
+2021-07-16 00:18:46,456 INFO    MainThread:12332 [wandb_init.py:_resume_backend():259] resuming backend
+2021-07-16 00:18:47,798 INFO    MainThread:12332 [wandb_run.py:_config_callback():872] config_cb None None {'opt': {'weights': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\/siim-covid19-detection/yolov5s.pt', 'img_size': [256, 256], 'batch_size': 16, 'device': 'cpu', 'epochs': 10, 'save_period': 1, 'project': 'kaggle-siim-covid', 'save_dir': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\save', 'single_cls': False, 'evolve': False, 'data': '..\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\\data\\data.yaml', 'cfg': '..\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\\models\\yolov5s.yaml', 'resume': False, 'notest': False, 'nosave': False, 'workers': 8, 'entity': 'poi', 'upload_dataset': False, 'bbox_interval': 2, 'hyp': {'names': ['none', 'opacity'], 'nc': 2, 'train': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\temp/covid/images/train', 'val': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\temp/covid/images/valid'}}, 'data_dict': {'names': ['none', 'opacity'], 'nc': 2, 'train': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\temp/covid/images/train', 'val': 'E:\\train_and_test_data\\SIIM_FISABIO_RSNA_COVID_19_Detection\\\\temp/covid/images/valid'}}
+2021-07-16 00:18:49,298 INFO    MainThread:12332 [wandb_init.py:_pause_backend():250] pausing backend
+2021-07-16 00:18:49,298 INFO    MainThread:12332 [jupyter.py:save_ipynb():284] not saving jupyter notebook
+2021-07-16 00:21:39,898 INFO    MainThread:12332 [wandb_init.py:_resume_backend():259] resuming backend
+2021-07-16 00:21:45,721 INFO    MainThread:12332 [wandb_init.py:_pause_backend():250] pausing backend
+2021-07-16 00:21:45,721 INFO    MainThread:12332 [jupyter.py:save_ipynb():284] not saving jupyter notebook
+2021-07-16 00:23:48,712 INFO    MainThread:12332 [wandb_init.py:_resume_backend():259] resuming backend
