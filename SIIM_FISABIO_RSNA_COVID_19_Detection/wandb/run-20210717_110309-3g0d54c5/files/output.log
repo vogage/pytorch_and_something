@@ -1,0 +1,297 @@
+
+wandb: Adding directory to artifact (E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\SIIM_COVID_19_Resized_to_256px_JPG)... Done. 6.0s
+wandb: WARNING Calling wandb.login() after wandb.init() has no effect.
+Downloading https://github.com/ultralytics/yolov5/releases/download/v5.0/yolov5s.pt to E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\siim-covid19-detection\yolov5s.pt...
+ERROR: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+Re-attempting https://github.com/ultralytics/yolov5/releases/download/v5.0/yolov5s.pt to E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\siim-covid19-detection\yolov5s.pt...
+ERROR: Downloaded file 'E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\siim-covid19-detection\yolov5s.pt' does not exist or size is < min_bytes=100000.0
+E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\siim-covid19-detection\yolov5s.pt missing, try downloading from https://github.com/ultralytics/yolov5/releases/
+[WinError 2] 系统找不到指定的文件。: 'ROOT_PATH'
+C:\Users\Qiandehou
+C:\Users\Qiandehou
+C:\Users\Qiandehou
+[WinError 2] 系统找不到指定的文件。: 'C'
+C:\Users\Qiandehou
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou 的目录
+2021/07/14  23:14    <DIR>          .
+2021/07/14  23:14    <DIR>          ..
+2021/07/10  10:16    <DIR>          .astropy
+2021/07/17  11:10             4,279 .bash_history
+2021/07/16  00:51    <DIR>          .cache
+2021/07/17  11:11    <DIR>          .conda
+2021/07/10  23:30                46 .condarc
+2021/07/14  23:08    <DIR>          .config
+2021/06/23  22:18    <DIR>          .continuum
+2021/06/23  23:42    <DIR>          .dotnet
+2021/06/23  22:19    <DIR>          .ipython
+2021/06/23  22:19    <DIR>          .matplotlib
+2021/07/14  23:14                89 .netrc
+2021/07/17  11:07    <DIR>          .spyder-py3
+2021/06/23  07:38    <DIR>          3D Objects
+2021/07/10  23:37    <DIR>          anaconda3
+2021/06/23  07:38    <DIR>          Contacts
+2021/07/16  21:58    <DIR>          Desktop
+2021/07/14  22:16    <DIR>          Documents
+2021/07/16  22:00    <DIR>          Downloads
+2021/06/23  07:57    <DIR>          Favorites
+2021/06/23  22:40    <DIR>          Jedi
+2021/06/23  07:38    <DIR>          Links
+2021/06/23  07:38    <DIR>          Music
+2021/07/17  09:25    <DIR>          OneDrive
+2021/06/23  07:39    <DIR>          Pictures
+2021/06/23  07:38    <DIR>          Saved Games
+2021/06/23  07:39    <DIR>          Searches
+2021/06/26  13:29    <DIR>          source
+2021/06/26  08:39    <DIR>          Videos
+               3 个文件          4,414 字节
+              27 个目录 365,532,049,408 可用字节
+C:\Users\Qiandehou\OneDrive
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\OneDrive 的目录
+2021/07/17  09:25    <DIR>          .
+2021/07/17  09:25    <DIR>          ..
+2021/06/23  21:50    <DIR>          Kindle
+2021/06/23  21:54    <DIR>          Mycode
+2021/06/23  21:48    <DIR>          Notability
+2021/06/23  21:48    <DIR>          OneNote Uploads
+2021/06/23  21:48    <DIR>          OneNote 上传
+2021/06/23  21:54    <DIR>          SJTU
+2014/11/09  21:49           811,008 SpaceSniffer.exe
+2021/06/25  21:54    <DIR>          附件
+2021/07/17  09:25             1,172 个人保管库.lnk
+2021/06/23  21:54    <DIR>          个人材料
+2021/07/08  21:52    <DIR>          拓璞
+2021/06/23  21:50    <DIR>          图片
+2021/06/23  21:54    <DIR>          文档
+               2 个文件        812,180 字节
+              13 个目录 365,531,398,144 可用字节
+C:\Users\Qiandehou\OneDrive\Mycode
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\OneDrive\Mycode 的目录
+2021/06/23  21:54    <DIR>          .
+2021/06/23  21:54    <DIR>          ..
+2021/06/23  21:54    <DIR>          .vs
+2021/06/23  21:50    <DIR>          C++
+2021/06/23  21:49    <DIR>          CODE_for_git
+2021/06/23  21:48    <DIR>          latex
+2021/06/26  14:38    <DIR>          LeetCode
+2021/07/02  22:42    <DIR>          matlab
+2021/07/13  20:57    <DIR>          python
+2021/06/23  21:50    <DIR>          third_library
+               0 个文件              0 字节
+              10 个目录 365,531,246,592 可用字节
+C:\Users\Qiandehou\OneDrive\Mycode\python
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\OneDrive\Mycode\python 的目录
+2021/07/13  20:57    <DIR>          .
+2021/07/13  20:57    <DIR>          ..
+2021/07/13  20:57    <DIR>          caj2pdf
+2021/06/23  21:48    <DIR>          kaggle
+2021/07/05  18:37    <DIR>          pytorch
+               0 个文件              0 字节
+               5 个目录 365,531,242,496 可用字节
+C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch 的目录
+2021/07/05  18:37    <DIR>          .
+2021/07/05  18:37    <DIR>          ..
+2021/07/13  20:57    <DIR>          pytorch_and_something
+               0 个文件              0 字节
+               3 个目录 365,531,234,304 可用字节
+[WinError 3] 系统找不到指定的路径。: 'github\\pytorch_and_something\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\\data\\scripts'
+C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch
+[WinError 3] 系统找不到指定的路径。: 'pytorch_and_something\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\\data\\scripts'
+C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch 的目录
+2021/07/05  18:37    <DIR>          .
+2021/07/05  18:37    <DIR>          ..
+2021/07/13  20:57    <DIR>          pytorch_and_something
+               0 个文件              0 字节
+               3 个目录 365,533,261,824 可用字节
+[WinError 3] 系统找不到指定的路径。: '\\pytorch_and_something\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\\data\\scripts'
+C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch
+[WinError 2] 系统找不到指定的文件。: '\\pytorch_and_something'
+C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch 的目录
+2021/07/05  18:37    <DIR>          .
+2021/07/05  18:37    <DIR>          ..
+2021/07/13  20:57    <DIR>          pytorch_and_something
+               0 个文件              0 字节
+               3 个目录 365,533,245,440 可用字节
+C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch\pytorch_and_something
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch\pytorch_and_something 的目录
+2021/07/13  20:57    <DIR>          .
+2021/07/13  20:57    <DIR>          ..
+2021/07/13  20:59    <DIR>          .git
+2021/07/13  20:59    <DIR>          autonomous_drive_lyft_v1
+2021/07/05  18:38    <DIR>          CV
+2021/07/05  18:37    <DIR>          NPL
+2021/07/05  18:02               122 README.md
+2021/07/13  20:57    <DIR>          SIIM_FISABIO_RSNA_COVID_19_Detection
+               1 个文件            122 字节
+               7 个目录 365,533,241,344 可用字节
+C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection 的目录
+2021/07/13  20:57    <DIR>          .
+2021/07/13  20:57    <DIR>          ..
+2021/07/13  08:48          (13,513) inital.py
+2021/07/13  20:57    <DIR>          yolov5
+               1 个文件         13,513 字节
+               3 个目录 365,533,143,040 可用字节
+C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection\yolov5
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection\yolov5 的目录
+2021/07/13  20:57    <DIR>          .
+2021/07/13  20:57    <DIR>          ..
+               0 个文件              0 字节
+               2 个目录 365,532,487,680 可用字节
+C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\OneDrive\Mycode\python\pytorch\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection 的目录
+2021/07/13  20:57    <DIR>          .
+2021/07/13  20:57    <DIR>          ..
+2021/07/13  08:48          (13,513) inital.py
+2021/07/13  20:57    <DIR>          yolov5
+               1 个文件         13,513 字节
+               3 个目录 365,531,623,424 可用字节
+C:\Users\Qiandehou
+[WinError 3] 系统找不到指定的路径。: '\\Desktop\\github\\pytorch_and_something\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\\data\\scripts'
+C:\Users\Qiandehou
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou 的目录
+2021/07/14  23:14    <DIR>          .
+2021/07/14  23:14    <DIR>          ..
+2021/07/10  10:16    <DIR>          .astropy
+2021/07/17  11:10             4,279 .bash_history
+2021/07/16  00:51    <DIR>          .cache
+2021/07/17  11:15    <DIR>          .conda
+2021/07/10  23:30                46 .condarc
+2021/07/14  23:08    <DIR>          .config
+2021/06/23  22:18    <DIR>          .continuum
+2021/06/23  23:42    <DIR>          .dotnet
+2021/06/23  22:19    <DIR>          .ipython
+2021/06/23  22:19    <DIR>          .matplotlib
+2021/07/14  23:14                89 .netrc
+2021/07/17  11:15    <DIR>          .spyder-py3
+2021/06/23  07:38    <DIR>          3D Objects
+2021/07/10  23:37    <DIR>          anaconda3
+2021/06/23  07:38    <DIR>          Contacts
+2021/07/16  21:58    <DIR>          Desktop
+2021/07/14  22:16    <DIR>          Documents
+2021/07/16  22:00    <DIR>          Downloads
+2021/06/23  07:57    <DIR>          Favorites
+2021/06/23  22:40    <DIR>          Jedi
+2021/06/23  07:38    <DIR>          Links
+2021/06/23  07:38    <DIR>          Music
+2021/07/17  09:25    <DIR>          OneDrive
+2021/06/23  07:39    <DIR>          Pictures
+2021/06/23  07:38    <DIR>          Saved Games
+2021/06/23  07:39    <DIR>          Searches
+2021/06/26  13:29    <DIR>          source
+2021/06/26  08:39    <DIR>          Videos
+               3 个文件          4,414 字节
+              27 个目录 365,530,488,832 可用字节
+C:\Users\Qiandehou\Desktop
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\Desktop 的目录
+2021/07/16  21:58    <DIR>          .
+2021/07/16  21:58    <DIR>          ..
+2021/07/14  21:55         2,671,637 2020-12-03_2160x3840_cf7edde79d04c25817840555450c4818.jpg
+2021/07/14  21:55         3,132,633 2020-12-27_2880x3840_6fc58eaf61a0466687ec242ca1548587.jpg
+2021/07/16  21:58               927 BitTorrent.lnk
+2021/07/14  22:21           270,128 E58ENztVgAkkpXM.jfif
+2021/07/14  22:21           217,783 E6GRJH3VoAIGfGt.jfif
+2021/07/14  22:18           365,487 E6KYOi1VUAAJwdM.jfif
+2021/07/10  08:29    <DIR>          github
+2021/07/10  08:33             1,877 Lantern.lnk
+               7 个文件      6,660,472 字节
+               3 个目录 365,530,497,024 可用字节
+C:\Users\Qiandehou\Desktop\github\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection\yolov5\data\scripts
+ 驱动器 C 中的卷是 Windows
+ 卷的序列号是 E4A9-7540
+ C:\Users\Qiandehou\Desktop\github\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection\yolov5\data\scripts 的目录
+2021/07/10  13:04    <DIR>          .
+2021/07/10  13:04    <DIR>          ..
+2021/07/10  13:04               289 download_weights.sh
+2021/07/10  13:04             1,006 get_coco.sh
+2021/07/10  13:04               635 get_coco128.sh
+               3 个文件          1,930 字节
+               2 个目录 365,530,255,360 可用字节
+[4mReloaded modules[24m: models, utils, utils.google_utils, utils.metrics, utils.torch_utils, utils.general, utils.augmentations, utils.datasets, utils.plots, models.common, models.experimental, test, utils.autoanchor, models.yolo, utils.loss, utils.wandb_logging, utils.wandb_logging.wandb_utils, train
+Setup complete. Using torch 1.9.0+cpu (CPU)
+aaaaaaaaaaaaaaaaaaaaaaaa
+             id                                              boxes  \
+0  000a312787f2  [{'x': 789.28836, 'y': 582.43035, 'width': 102...
+1  000c3a3f293f                                                NaN
+2  0012ff7358bc  [{'x': 677.42216, 'y': 197.97662, 'width': 867...
+3  001398f4ff4f  [{'x': 2729, 'y': 2181.33331, 'width': 948.000...
+4  001bd15d1891  [{'x': 623.23328, 'y': 1050, 'width': 714, 'he...
+                                               label StudyInstanceUID  \
+0  opacity 1 789.28836 582.43035 1815.94498 2499....     5776db0cec75
+1                                     none 1 0 0 1 1     ff0879eb20ed
+2  opacity 1 677.42216 197.97662 1545.21983 1197....     9d514ce429a7
+3    opacity 1 2729 2181.33331 3677.00012 2785.33331     28dddc8559b2
+4  opacity 1 623.23328 1050 1337.23328 2156 opaci...     dfd9fdd85a3e
+                                                path image_level
+0  E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID...     opacity
+1  E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID...        none
+2  E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID...     opacity
+3  E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID...     opacity
+4  E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID...     opacity
+E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\\siim-covid19-detection/train\c925ca312688\7cc418f2e1b8\37c3ad608cb3.dcm
+E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\\siim-covid19-detection/train\e8ca5a4146ab\64db7471fca8\62fb74aea804.dcm
+E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\\siim-covid19-detection/train\37ffdf650199\c1773779a1d8\1335b56b7a98.dcm
+E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\\siim-covid19-detection/train\bc27460a2859\03f6fcb3dd79\1467c3c84c42.dcm
+E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\\siim-covid19-detection/train\de4e4acfa7ea\7125f5a4c5e5\787a6a770572.dcm
+                id  dim0  dim1
+1263  d8ba599611e5  2336  2836
+1264  29b23a11d1e4  3488  4256
+             id                                              boxes  \
+0  000a312787f2  [{'x': 789.28836, 'y': 582.43035, 'width': 102...
+1  000c3a3f293f                                                NaN
+2  0012ff7358bc  [{'x': 677.42216, 'y': 197.97662, 'width': 867...
+3  001398f4ff4f  [{'x': 2729, 'y': 2181.33331, 'width': 948.000...
+4  001bd15d1891  [{'x': 623.23328, 'y': 1050, 'width': 714, 'he...
+                                               label StudyInstanceUID  \
+0  opacity 1 789.28836 582.43035 1815.94498 2499....     5776db0cec75
+1                                     none 1 0 0 1 1     ff0879eb20ed
+2  opacity 1 677.42216 197.97662 1545.21983 1197....     9d514ce429a7
+3    opacity 1 2729 2181.33331 3677.00012 2785.33331     28dddc8559b2
+4  opacity 1 623.23328 1050 1337.23328 2156 opaci...     dfd9fdd85a3e
+                                                path image_level  dim0  dim1
+0  E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID...     opacity  3488  4256
+1  E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID...        none  2320  2832
+2  E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID...     opacity  2544  3056
+3  E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID...     opacity  3520  4280
+4  E:\train_and_test_data\SIIM_FISABIO_RSNA_COVID...     opacity  2800  3408
+Size of dataset: 6334, training images: 5067. validation images: 1267
+C:\Users\Qiandehou\Desktop\github\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection\inital.py:181: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.show()
+C:\Users\Qiandehou\anaconda3\lib\site-packages\pandas\core\indexing.py:1597: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  self.obj[key] = value
+C:\Users\Qiandehou\anaconda3\lib\site-packages\pandas\core\indexing.py:1720: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  self._setitem_single_column(loc, value, pi)
