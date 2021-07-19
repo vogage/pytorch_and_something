@@ -69,7 +69,7 @@ TEST_PATH = ROOT_PATH+'SIIM_COVID_19_Resized_to_256px_JPG\test' # absolute path
 
 MODEL_PATH = 'C:\\Users\Qiandehou\Desktop\github\pytorch_and_something\SIIM_FISABIO_RSNA_COVID_19_Detection\yolov5\runs\train\exp11\best.pt'
 
-PRED_PATH = 'C:\\Users\Qiandehou\Desktop\github\pytorch_and_something\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\runs\detect\exp1\labels'
+PRED_PATH = 'C:\\Users\Qiandehou\Desktop\github\pytorch_and_something\\SIIM_FISABIO_RSNA_COVID_19_Detection\\yolov5\\runs\detect\exp10\labels'
 
 
 prediction_files = os.listdir(PRED_PATH)
@@ -109,7 +109,7 @@ def get_conf_bboxes(file_path):
 
 
 # Read the submisison file
-sub_df = pd.read_csv('/kaggle/input/siim-covid19-detection/sample_submission.csv')
+sub_df = pd.read_csv('E:\\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection\siim-covid19-detection/sample_submission.csv')
 sub_df.tail()
 
 # Id,PredictionString
@@ -125,6 +125,7 @@ sub_df.tail()
 predictions = []
 
 for i in tqdm(range(len(sub_df))):
+    
     row = sub_df.loc[i]
     id_name = row.id.split('_')[0]
     id_level = row.id.split('_')[-1]
