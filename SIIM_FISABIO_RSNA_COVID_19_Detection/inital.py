@@ -50,6 +50,45 @@ def read_xray(path, voi_lut = True, fix_monochrome = True):
     # "human-friendly" view
     if voi_lut:
         data = apply_voi_lut(dicom.pixel_array, dicom)
+        """Apply a modality lookup table or rescale operation to `arr`.
+
+        .. versionadded:: 1.4
+    
+        Parameters
+        ----------
+        arr : numpy.ndarray
+            The :class:`~numpy.ndarray` to apply the modality LUT or rescale
+            operation to.
+        ds : dataset.Dataset
+            A dataset containing a :dcm:`Modality LUT Module
+            <part03/sect_C.11.html#sect_C.11.1>`.
+    
+        Returns
+        -------
+        numpy.ndarray
+            An array with applied modality LUT or rescale operation. If
+            (0028,3000) *Modality LUT Sequence* is present then returns an array
+            of ``np.uint8`` or ``np.uint16``, depending on the 3rd value of
+            (0028,3002) *LUT Descriptor*. If (0028,1052) *Rescale Intercept* and
+            (0028,1053) *Rescale Slope* are present then returns an array of
+            ``np.float64``. If neither are present then `arr` will be returned
+            unchanged.
+    
+        Notes
+        -----
+        When *Rescale Slope* and *Rescale Intercept* are used, the output range
+        is from (min. pixel value * Rescale Slope + Rescale Intercept) to
+        (max. pixel value * Rescale Slope + Rescale Intercept), where min. and
+        max. pixel value are determined from (0028,0101) *Bits Stored* and
+        (0028,0103) *Pixel Representation*.
+    
+        References
+        ----------
+        * DICOM Standard, Part 3, :dcm:`Annex C.11.1
+          <part03/sect_C.11.html#sect_C.11.1>`
+        * DICOM Standard, Part 4, :dcm:`Annex N.2.1.1
+          <part04/sect_N.2.html#sect_N.2.1.1>`
+        """
     else:
         data = dicom.pixel_array
                
@@ -80,7 +119,7 @@ ROOT_PATH=r'E:\\train_and_test_data\SIIM_FISABIO_RSNA_COVID_19_Detection/'
 
 TRAIN_PATH =ROOT_PATH+'siim-covid19-detection\\train\\'
 
-train=pd.read_csv(ROOT_PATH+'siim-covid19-detection/train_image_level.csv')
+df_train=pd.read_csv(ROOT_PATH+'siim-covid19-detection/train_image_level.csv')
 
 # train = pd.read_csv('../input/siim-covid19-detection/train_image_level.csv')
 path =ROOT_PATH+'siim-covid19-detection/train/ae3e63d94c13/288554eb6182/e00f9fe0cce5.dcm'
@@ -92,22 +131,35 @@ dim0 = []
 dim1 = []
 splits = []
 
-for split in ['test', 'train']:
-    save_dir =ROOT_PATH+ f'mytmp/{split}/'
+# for split in ['test', 'train']:
+#     save_dir =ROOT_PATH+ f'mytmp/{split}/'
 
-    os.makedirs(save_dir, exist_ok=True)
+#     os.makedirs(save_dir, exist_ok=True)
     
-    for dirname, _, filenames in tqdm(os.walk(ROOT_PATH+f'siim-covid19-detection\{split}')):
-        for file in filenames:
-            # set keep_ratio=True to have original aspect ratio
-            xray = read_xray(os.path.join(dirname, file))
-            im = resize(xray, size=256)  
-            im.save(os.path.join(save_dir, file.replace('dcm', 'jpg')))
+#     for dirname, dirpath, filenames in tqdm(os.walk(ROOT_PATH+f'siim-covid19-detection\{split}')):
+#         for file in filenames:
+#             # set keep_ratio=True to have original aspect ratio
+#             xray = read_xray(os.path.join(dirname, file))
+#             im = resize(xray, size=256)  
+#             im.save(os.path.join(save_dir, file.replace('dcm', 'jpg')))
 
-            image_id.append(file.replace('.dcm', ''))
-            dim0.append(xray.shape[0])
-            dim1.append(xray.shape[1])
-            splits.append(split)
+#             image_id.append(file.replace('.dcm', ''))
+#             dim0.append(xray.shape[0])
+#             dim1.append(xray.shape[1])
+#             splits.append(split)
+
+
+TRAIN_PATH='/kaggle/working/train/'
+
+# Modify values in the id column
+df_train['id'] = df_train.apply(lambda row: row.id.split('_')[0], axis=1)
+# Add absolute path
+df_train['path'] = df_train.apply(lambda row: TRAIN_PATH+row.id+'.jpg', axis=1)
+# Get image level labels
+df_train['image_level'] = df_train.apply(lambda row: row.label.split(' ')[0], axis=1)
+
+df_train.head(5)
+
 
 
                
